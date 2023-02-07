@@ -1,0 +1,26 @@
+gke-brown-bag-cluster-default-pool-2d27c38e-8l8n /home/akashthakur # iptables -t nat -L KUBE-SERVICES -n  | column -t
+Chain                      KUBE-SERVICES  (2   references)                                                                                                                                                                                 
+target                     prot           opt  source       destination                                                                                                                                                                    
+KUBE-SVC-OI3ES3UZPSOHIVZW  tcp            --   0.0.0.0/0    10.24.11.131   /*  default/np-service                     cluster       IP          */     tcp   dpt:80                                                                        
+KUBE-SVC-J52RYPNHRH6Q45GD  tcp            --   0.0.0.0/0    10.24.2.153    /*  default/my-lb-service                  cluster       IP          */     tcp   dpt:80                                                                        
+KUBE-FW-J52RYPNHRH6Q45GD   tcp            --   0.0.0.0/0    34.68.103.187  /*  default/my-lb-service                  loadbalancer  IP          */     tcp   dpt:80                                                                        
+KUBE-SVC-TCOU7JCQXEZGVUNU  udp            --   0.0.0.0/0    10.24.0.10     /*  kube-system/kube-dns:dns               cluster       IP          */     udp   dpt:53                                                                        
+KUBE-SVC-ERIFXISQEP7F7OF4  tcp            --   0.0.0.0/0    10.24.0.10     /*  kube-system/kube-dns:dns-tcp           cluster       IP          */     tcp   dpt:53                                                                        
+KUBE-SVC-XP4WJ6VSLGWALMW5  tcp            --   0.0.0.0/0    10.24.2.144    /*  kube-system/default-http-backend:http  cluster       IP          */     tcp   dpt:80                                                                        
+KUBE-SVC-QMWWTXBG7KFJQKLO  tcp            --   0.0.0.0/0    10.24.0.133    /*  kube-system/metrics-server             cluster       IP          */     tcp   dpt:443                                                                       
+KUBE-SVC-NPX46M4PTMTKRN6Y  tcp            --   0.0.0.0/0    10.24.0.1      /*  default/kubernetes:https               cluster       IP          */     tcp   dpt:443                                                                       
+KUBE-SVC-ERVH2TYUWKPRTIBA  tcp            --   0.0.0.0/0    10.24.1.43     /*  default/cip-service                    cluster       IP          */     tcp   dpt:80                                                                        
+KUBE-NODEPORTS             all            --   0.0.0.0/0    0.0.0.0/0      /*  kubernetes                             service       nodeports;  NOTE:  this  must     be  the  last  rule  in  this  chain  */  ADDRTYPE  match  dst-type  LOCAL
+gke-brown-bag-cluster-default-pool-2d27c38e-8l8n /home/akashthakur # iptables -t nat -L KUBE-SVC-ERVH2TYUWKPRTIBA -n  | column -t
+Chain                      KUBE-SVC-ERVH2TYUWKPRTIBA  (1   references)                                                                                         
+target                     prot                       opt  source         destination                                                                          
+KUBE-MARK-MASQ             tcp                        --   !10.20.3.0/24  10.24.1.43   /*  default/cip-service  cluster  IP         */    tcp     dpt:80       
+KUBE-SEP-4RNNWNP2M5YUJTHR  all                        --   0.0.0.0/0      0.0.0.0/0    /*  default/cip-service  */       statistic  mode  random  probability  0.33333333349
+KUBE-SEP-5GGXXISNWW7TWRAA  all                        --   0.0.0.0/0      0.0.0.0/0    /*  default/cip-service  */       statistic  mode  random  probability  0.50000000000
+KUBE-SEP-JQ64KJ2M7PLM5ICP  all                        --   0.0.0.0/0      0.0.0.0/0    /*  default/cip-service  */                                             
+gke-brown-bag-cluster-default-pool-2d27c38e-8l8n /home/akashthakur # iptables -t nat -L KUBE-SEP-JQ64KJ2M7PLM5ICP -n  | column -t
+Chain           KUBE-SEP-JQ64KJ2M7PLM5ICP  (1   references)                                                 
+target          prot                       opt  source       destination                                    
+KUBE-MARK-MASQ  all                        --   10.20.8.2    0.0.0.0/0    /*  default/cip-service  */       
+DNAT            tcp                        --   0.0.0.0/0    0.0.0.0/0    /*  default/cip-service  */  tcp  to:10.20.8.2:80
+gke-brown-bag-cluster-default-pool-2d27c38e-8l8n /home/akashthakur # 
